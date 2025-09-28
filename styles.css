@@ -1858,3 +1858,126 @@ footer {
         justify-content: center;
     }
 }
+
+/* Sticky Test Button */
+.sticky-test-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.sticky-test-button a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #7C3AED 0%, #5B3ACC 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.sticky-test-button a:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.5),
+                0 8px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #8B4BFF 0%, #6A3DE8 100%);
+}
+
+.button-icon {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    animation: pulse 2s infinite;
+}
+
+.button-text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.button-arrow {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    opacity: 0.8;
+}
+
+.sticky-test-button a:hover .button-arrow {
+    transform: translateX(5px);
+    opacity: 1;
+}
+
+/* Pulse animation for icon */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Slide in animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile responsiveness for sticky button */
+@media (max-width: 768px) {
+    .sticky-test-button {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .sticky-test-button a {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+
+    .button-text {
+        display: none; /* Hide text on mobile, show only icon */
+    }
+
+    .button-arrow {
+        display: none;
+    }
+
+    .sticky-test-button a {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .button-icon {
+        font-size: 24px;
+        margin: 0;
+    }
+}
+
+/* Tablet view */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sticky-test-button {
+        bottom: 25px;
+        right: 25px;
+    }
+
+    .sticky-test-button a {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+}
