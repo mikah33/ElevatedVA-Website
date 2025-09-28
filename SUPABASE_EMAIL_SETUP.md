@@ -34,7 +34,7 @@ Supabase uses these variables - they're already in the template:
 
 ### Step 4: Customize for Each Email Type
 
-#### **Signup Confirmation**
+#### **Signup Confirmation** (`auth-email-template.html`)
 ```html
 {{ .EmailTitle }} = "Confirm Your Email"
 {{ .EmailBody }} = "Thanks for signing up for ElevatedVA! Please confirm your email address to get started with your AI phone assistant."
@@ -42,15 +42,26 @@ Supabase uses these variables - they're already in the template:
 {{ .ExpirationTime }} = "24 hours"
 ```
 
-#### **Password Reset**
+#### **Password Reset** (`email-reset-password.html`)
 ```html
-{{ .EmailTitle }} = "Reset Your Password"
-{{ .EmailBody }} = "We received a request to reset your password. Click the button below to create a new password."
-{{ .EmailAction }} = "Reset Password"
+{{ .UserName }} = User's name or "there"
+{{ .Email }} = User's email address
+{{ .ResetURL }} = Password reset link
 {{ .ExpirationTime }} = "1 hour"
+{{ .IPAddress }} = Request IP address
+{{ .RequestDate }} = Date/time of request
 ```
 
-#### **Magic Link**
+#### **Invite User** (`email-invite-user.html`)
+```html
+{{ .InviterName }} = Name of person sending invite
+{{ .CompanyName }} = Company/team name
+{{ .PersonalMessage }} = Custom invitation message
+{{ .InvitationURL }} = Invitation acceptance link
+{{ .ExpirationTime }} = "7 days"
+```
+
+#### **Magic Link** (`auth-email-template.html`)
 ```html
 {{ .EmailTitle }} = "Your Magic Link"
 {{ .EmailBody }} = "Click the button below to instantly sign in to your ElevatedVA dashboard. No password needed!"
@@ -58,7 +69,7 @@ Supabase uses these variables - they're already in the template:
 {{ .ExpirationTime }} = "10 minutes"
 ```
 
-#### **Welcome Email (After Confirmation)**
+#### **Welcome Email (After Confirmation)** (`auth-email-template.html`)
 ```html
 {{ .EmailTitle }} = "Welcome to ElevatedVA! 🎉"
 {{ .EmailBody }} = "Your AI phone assistant is ready! Your 3-day free trial starts now. Let's set up your phone number and greeting."
