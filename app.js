@@ -45,18 +45,11 @@ let currentUser = null;
 
 // Countdown Timer Function
 function startCountdown() {
-    // Set the target date to 20 days from now
-    const now = new Date();
-    const targetDate = new Date(now.getTime() + (20 * 24 * 60 * 60 * 1000)); // 20 days from now
+    // Clear any old countdown target from localStorage
+    localStorage.removeItem('countdownTarget');
 
-    // Store target date in localStorage for consistency across page reloads
-    if (!localStorage.getItem('countdownTarget')) {
-        localStorage.setItem('countdownTarget', targetDate.getTime());
-    }
-
-    // Get the stored target date
-    const storedTarget = parseInt(localStorage.getItem('countdownTarget'));
-    const countDownDate = new Date(storedTarget);
+    // Set the target date to October 14th, 2025 at midnight
+    const countDownDate = new Date('October 14, 2025 00:00:00').getTime();
 
     // Update the countdown every 1 second
     const timer = setInterval(function() {
