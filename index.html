@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevatedVA - AI Phone Assistant for Business</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1197873369039108');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1197873369039108&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bubble-container">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- Header with Hamburger Menu -->
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h2>ElevatedVA</h2>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#" onclick="openAuthModal('signin')">Sign In</a></li>
+                    <li><a href="#" onclick="openAuthModal('signup')" class="cta-button">Get Started</a></li>
+                    <li id="subscribeMenu" style="display: none;">
+                        <a href="#" onclick="handleSubscribe()" class="cta-button" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">Subscribe - $39.99</a>
+                    </li>
+                    <li id="accountMenu" style="display: none;">
+                        <a href="#" onclick="openAccountModal()">My Account</a>
+                    </li>
+                    <li id="logoutMenu" style="display: none;">
+                        <a href="#" onclick="handleLogout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text-content">
+                <h1 class="hero-title">Never Miss Another Call</h1>
+                <p class="hero-subtitle">AI-powered phone assistant that answers, schedules, and manages your business calls 24/7</p>
+                <div class="hero-buttons">
+                    <button class="primary-button" onclick="handleQuickSubscribe()" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+                        🚀 Start Now - $39.99/mo
+                    </button>
+                    <button class="secondary-button" onclick="scrollToSection('demo')">Watch Demo</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <h3>24/7</h3>
+                        <p>Available</p>
+                    </div>
+                    <div class="stat">
+                        <h3>$39.99</h3>
+                        <p>Per Month</p>
+                    </div>
+                    <div class="stat">
+                        <h3>5 min</h3>
+                        <p>Setup Time</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="iphone-mockup">
+                    <img src="iphone-final.png" alt="Elevated AI Phone App" class="iphone-image">
+                </div>
+            </div>
+            <!-- App Store Badges -->
+            <div class="app-store-badges">
+                <a href="#" class="app-badge" onclick="event.preventDefault(); alert('iOS App Coming Soon!');">
+                    <svg viewBox="0 0 140 48" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="48" rx="8" fill="black"/>
+                        <path d="M29.24 24.12c-.03-3.02 2.46-4.47 2.57-4.54-1.4-2.04-3.57-2.32-4.35-2.35-1.85-.19-3.61 1.09-4.55 1.09-.94 0-2.39-1.06-3.93-1.03-2.02.03-3.89 1.18-4.93 3-2.1 3.64-.54 9.03 1.51 11.99 1 1.45 2.19 3.08 3.75 3.02 1.51-.06 2.08-.98 3.9-.98 1.82 0 2.34.98 3.93.95 1.62-.03 2.65-1.48 3.64-2.94 1.15-1.69 1.62-3.32 1.65-3.41-.04-.01-3.16-1.21-3.19-4.8z" fill="white"/>
+                        <path d="M26.33 14.94c.83-1.01 1.39-2.4 1.24-3.79-1.2.05-2.65.8-3.51 1.8-.77.89-1.45 2.31-1.27 3.68 1.34.1 2.71-.68 3.54-1.69z" fill="white"/>
+                        <text x="45" y="20" font-family="SF Pro Display, -apple-system, Arial" font-size="10" fill="white">Download on the</text>
+                        <text x="45" y="35" font-family="SF Pro Display, -apple-system, Arial" font-size="14" font-weight="600" fill="white">App Store</text>
+                        <text x="45" y="44" font-family="SF Pro Display, -apple-system, Arial" font-size="8" fill="#86868b">Coming Soon</text>
+                    </svg>
+                </a>
+                <a href="#" class="app-badge" onclick="event.preventDefault(); alert('Android App Coming Soon!');">
+                    <svg viewBox="0 0 140 48" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="48" rx="8" fill="black"/>
+                        <!-- Google Play Triangle -->
+                        <g transform="translate(20, 16)">
+                            <polygon points="0,0 0,16 14,8" fill="url(#gradient1)"/>
+                            <polygon points="0,0 9,5 9,11 0,16" fill="url(#gradient2)"/>
+                            <polygon points="9,5 14,8 9,11" fill="url(#gradient3)"/>
+                            <defs>
+                                <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="50%">
+                                    <stop offset="0%" style="stop-color:#00C9FF;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#92FE9D;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="gradient2" x1="0%" y1="0%" x2="50%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00D2FF;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#3A7BD5;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FFD200;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#F7971E;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                        </g>
+                        <text x="45" y="20" font-family="-apple-system, Roboto, Arial" font-size="10" fill="white">GET IT ON</text>
+                        <text x="45" y="35" font-family="-apple-system, Roboto, Arial" font-size="14" font-weight="500" fill="white">Google Play</text>
+                        <text x="45" y="44" font-family="-apple-system, Roboto, Arial" font-size="8" fill="#86868b">Coming Soon</text>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Launch Countdown -->
+    <section class="countdown-section" id="countdown">
+        <div class="container">
+            <div class="countdown-content">
+                <h2 class="countdown-title">App Launching Soon!</h2>
+                <p class="countdown-subtitle">Get ready for the mobile experience</p>
+                <div class="countdown-timer">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">20</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+                <button class="notify-button" onclick="openAuthModal('signup')">
+                    🔔 Get Notified on Launch Day
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Demo Section -->
+    <section class="demo-section" id="demo">
+        <div class="container">
+            <div class="demo-content">
+                <h2 class="demo-title">See It In Action</h2>
+                <p class="demo-subtitle">Watch how ElevatedVA transforms your business communications</p>
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <div class="coming-soon-badge">Demo Coming Soon</div>
+                        <div class="play-button-placeholder">
+                            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="40" cy="40" r="40" fill="rgba(124, 58, 237, 0.3)"/>
+                                <circle cx="40" cy="40" r="35" fill="rgba(124, 58, 237, 0.5)"/>
+                                <path d="M32 24L56 40L32 56V24Z" fill="white"/>
+                            </svg>
+                        </div>
+                        <p class="video-coming-text">Full demo video dropping with app launch!</p>
+                    </div>
+                    <!-- Uncomment and update when video is ready -->
+                    <!-- <iframe
+                        src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe> -->
+                </div>
+                <div class="demo-features">
+                    <div class="demo-feature">
+                        <span class="feature-icon">📱</span>
+                        <h4>Live Call Demo</h4>
+                        <p>See real conversations</p>
+                    </div>
+                    <div class="demo-feature">
+                        <span class="feature-icon">🤖</span>
+                        <h4>AI in Action</h4>
+                        <p>Watch smart responses</p>
+                    </div>
+                    <div class="demo-feature">
+                        <span class="feature-icon">📊</span>
+                        <h4>Dashboard Tour</h4>
+                        <p>Explore all features</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Statement -->
+    <section class="mission" id="mission">
+        <div class="container">
+            <div class="mission-content">
+                <h2>Our Story</h2>
+                <p class="mission-text">
+                    We were tired of missing important business calls and didn't want to pay $5,000+ for an AI caller,
+                    which companies were trying to charge. So we decided to build something better.
+                </p>
+                <p class="mission-tagline">
+                    Made by business owners, for business owners.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Section -->
+    <section class="partnership">
+        <div class="container">
+            <div class="partner-content">
+                <p>Proudly partnered with</p>
+                <a href="https://elevatedagency.org" target="_blank" class="partner-link">
+                    <h3>Elevated AI</h3>
+                    <span>elevatedagency.org</span>
+                </a>
+                <p class="partner-description">to bring you enterprise-grade AI technology at an affordable price</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Everything You Need</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📞</div>
+                    <h3>Smart Call Handling</h3>
+                    <p>AI answers calls naturally and professionally</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Appointment Booking</h3>
+                    <p>Automatically schedules appointments to your calendar</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Call Analytics</h3>
+                    <p>Track and analyze all your business calls</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <div class="auth-container">
+                <h2 id="authTitle">Sign In</h2>
+                <p id="authSubtitle">Access your account on web or mobile</p>
+
+                <form id="authForm">
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Email address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <input type="text" id="fullName" placeholder="Full name">
+                    </div>
+                    <button type="submit" class="submit-button">Continue</button>
+                </form>
+
+                <p class="auth-switch">
+                    <span id="authSwitchText">Don't have an account?</span>
+                    <a href="#" id="authSwitchLink" onclick="toggleAuthMode()">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Stripe Checkout Modal -->
+    <div id="stripeCheckoutModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeCheckoutModal()">&times;</span>
+            <div class="modal-header">
+                <h2>Complete Your Subscription</h2>
+                <p style="color: var(--text-secondary);">Secure payment powered by Stripe</p>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <!-- Subscription Summary -->
+                <div class="subscription-summary" style="background: var(--glass); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-light); margin-bottom: 1rem;">ElevatedVA Professional</h3>
+
+                    <!-- Pricing Options (if you have multiple) -->
+                    <div class="pricing-options" style="margin-bottom: 1rem; display: none;">
+                        <label style="display: block; margin-bottom: 0.5rem;">
+                            <input type="radio" name="priceOption" value="price_1S7mdBGcGCTrlHr7HtTPBbs8" checked onchange="updatePriceDisplay(this)">
+                            <span style="margin-left: 0.5rem;">Monthly - $39.99/mo</span>
+                        </label>
+                        <label style="display: block; margin-bottom: 0.5rem;">
+                            <input type="radio" name="priceOption" value="price_1S7mdBGcGCTrlHr7oLvGnWP9" onchange="updatePriceDisplay(this)">
+                            <span style="margin-left: 0.5rem;">Option 2</span>
+                        </label>
+                        <label style="display: block;">
+                            <input type="radio" name="priceOption" value="price_1S7mdBGcGCTrlHr7Mnzsbqmu" onchange="updatePriceDisplay(this)">
+                            <span style="margin-left: 0.5rem;">Option 3</span>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Monthly Subscription</span>
+                        <span style="font-weight: 600; color: var(--primary-light);" id="selectedPrice">$39.99/mo</span>
+                    </div>
+                    <hr style="opacity: 0.2; margin: 1rem 0;">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 0.5rem 0;">✓ 24/7 AI Phone Assistant</li>
+                        <li style="margin: 0.5rem 0;">✓ Unlimited Calls</li>
+                        <li style="margin: 0.5rem 0;">✓ Calendar Integration</li>
+                        <li style="margin: 0.5rem 0;">✓ Call Analytics & Transcripts</li>
+                    </ul>
+                </div>
+
+                <!-- Stripe Payment Element -->
+                <form id="payment-form">
+                    <div id="payment-element">
+                        <!-- Stripe Payment Element will be mounted here -->
+                    </div>
+                    <button id="submit-payment" class="submit-button" style="width: 100%; margin-top: 1.5rem;">
+                        <span id="button-text">Subscribe Now - $39.99/mo</span>
+                        <span id="spinner" style="display: none;">Processing...</span>
+                    </button>
+                    <div id="payment-message" style="margin-top: 1rem; color: #ef4444; text-align: center;"></div>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    <p>🔒 Payments are secure and encrypted</p>
+                    <p style="margin-top: 0.5rem;">Cancel anytime from your account</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Management Modal -->
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAccountModal()">&times;</span>
+            <div class="account-container">
+                <h2>My Account</h2>
+                <div class="account-info">
+                    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+                    <p><strong>Status:</strong> <span id="subscriptionStatus">Not Subscribed</span></p>
+                </div>
+
+                <!-- Embedded Subscription Details -->
+                <div class="subscription-details" id="subscriptionDetailsSection" style="display: none;">
+                    <div class="detail-card">
+                        <div class="detail-label">Current Plan</div>
+                        <div class="detail-value" id="planName">Monthly</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value" id="planAmount">$39.99/mo</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" style="color: #22c55e;" id="planStatus">Active</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Customer ID</div>
+                        <div class="detail-value" style="font-size: 0.9rem;" id="stripeCustomerId">-</div>
+                    </div>
+                </div>
+
+                <!-- Embedded Subscription Details -->
+                <div class="subscription-details" id="subscriptionDetailsSection" style="display: none;">
+                    <div class="detail-card">
+                        <div class="detail-label">Current Plan</div>
+                        <div class="detail-value" id="planName">Monthly</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value" id="planAmount">$39.99/mo</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Next Billing</div>
+                        <div class="detail-value" id="nextBilling">-</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" style="color: #22c55e;" id="planStatus">Active</div>
+                    </div>
+                </div>
+
+                <div class="subscription-section">
+                    <h3>Subscription Management</h3>
+
+                    <!-- Active Subscription View -->
+                    <div id="activeSubscriptionView" style="display: none;">
+                        <div class="subscription-status-card" style="background: var(--glass); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 1px solid var(--glass-border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <div>
+                                    <h4 style="color: var(--primary-light); margin: 0;">ElevatedVA Professional</h4>
+                                    <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0; font-size: 0.9rem;">Monthly Subscription</p>
+                                </div>
+                                <span class="status-badge" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">ACTIVE</span>
+                            </div>
+
+                            <div class="subscription-info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.25rem;">Monthly Payment</p>
+                                    <p style="color: var(--text-primary); font-size: 1.25rem; font-weight: 600; margin: 0;">$39.99</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.25rem;">Next Billing</p>
+                                    <p style="color: var(--text-primary); font-size: 1rem; font-weight: 500; margin: 0;" id="nextBillingDisplay">-</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.25rem;">Customer Since</p>
+                                    <p style="color: var(--text-primary); font-size: 1rem; font-weight: 500; margin: 0;" id="customerSince">-</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.25rem;">Status</p>
+                                    <p style="color: #22c55e; font-size: 1rem; font-weight: 500; margin: 0;">Paid</p>
+                                </div>
+                            </div>
+
+                            <div class="plan-benefits" style="margin: 1.5rem 0;">
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Your plan includes:</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">24/7 AI Phone Assistant</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">Unlimited Calls</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">Call Transcripts</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">Calendar Integration</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">Analytics Dashboard</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: #22c55e;">✓</span>
+                                        <span style="color: var(--text-primary); font-size: 0.9rem;">Priority Support</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="subscription-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <button class="secondary-action-button" onclick="showBillingHistory()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <span>📄</span> Billing History
+                                </button>
+                                <button class="secondary-action-button" onclick="updatePaymentMethod()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <span>💳</span> Update Payment
+                                </button>
+                            </div>
+
+                            <button class="cancel-button" onclick="cancelSubscription()" style="width: 100%; margin-top: 1rem; background: transparent; border: 1px solid #ef4444; color: #ef4444;">
+                                Cancel Subscription
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- No Subscription View -->
+                    <div id="noSubscriptionView">
+                        <div class="plan-card">
+                            <h4>Professional Plan</h4>
+                            <p class="price">$39.99/month</p>
+                            <ul class="plan-features">
+                                <li>✓ 24/7 AI Phone Assistant</li>
+                                <li>✓ Unlimited Calls</li>
+                                <li>✓ Calendar Integration</li>
+                                <li>✓ Priority Support</li>
+                            </ul>
+                            <button class="subscribe-button" onclick="subscribe()">Subscribe Now - $39.99/mo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing History Section -->
+                <div id="billingHistory" class="billing-history" style="display: none;">
+                    <h4>Billing History</h4>
+                    <div id="billingHistoryList" class="billing-list">
+                        <!-- Billing history will be populated here -->
+                    </div>
+                    <button class="secondary-action-button" onclick="hideBillingHistory()">
+                        ← Back
+                    </button>
+                </div>
+
+                <!-- Embedded Payment Update Section -->
+                <div id="paymentUpdate" class="payment-update" style="display: none;">
+                    <h4>Update Payment Method</h4>
+                    <div class="current-card">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Current card ending in: <span id="currentCardLast4">****</span></p>
+                    </div>
+                    <form id="payment-form">
+                        <div id="card-element" class="stripe-card-element">
+                            <!-- Stripe Elements will be inserted here -->
+                        </div>
+                        <div id="card-errors" role="alert" style="color: #ef4444; margin-top: 0.5rem;"></div>
+                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                            <button type="submit" class="submit-button" id="updateCardButton">
+                                Update Card
+                            </button>
+                            <button type="button" class="secondary-action-button" onclick="hidePaymentUpdate()">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Elevated Systems LLC. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <span class="separator">|</span>
+                    <a href="terms.html">Terms of Service</a>
+                    <span class="separator">|</span>
+                    <a href="mailto:admin@elevatedsystems.info">Contact Support</a>
+                </div>
+                <p>Made with 💜 for business owners</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html><!-- Updated: Sun Sep 28 13:45:51 EDT 2025 -->

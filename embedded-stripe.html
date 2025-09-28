@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Embedded Stripe Example</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .invoice-list {
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        .invoice-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .invoice-date {
+            color: #666;
+            font-size: 14px;
+        }
+        .invoice-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #7c3aed;
+        }
+        .invoice-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #10b981;
+            color: white;
+        }
+        .payment-method-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+        #card-element {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Embedded Billing Management</h2>
+
+    <!-- Custom Invoice Display -->
+    <div class="invoice-list" id="invoiceList">
+        <h3>Recent Invoices</h3>
+        <div class="invoice-item">
+            <div>
+                <div class="invoice-date">Oct 18, 2024</div>
+                <div>Monthly Subscription</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span class="invoice-amount">$39.99</span>
+                <span class="invoice-status">PAID</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Payment Method Update -->
+    <div class="payment-method-section">
+        <h3>Update Payment Method</h3>
+        <form id="payment-form">
+            <div id="card-element">
+                <!-- Stripe Elements will be inserted here -->
+            </div>
+            <button type="submit" style="margin-top: 20px; padding: 10px 20px; background: #7c3aed; color: white; border: none; border-radius: 5px;">
+                Update Card
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY');
+        const elements = stripe.elements();
+
+        // Create card element
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                }
+            }
+        });
+
+        // Mount card element
+        cardElement.mount('#card-element');
+
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // In production, you'd create a SetupIntent on your backend
+            // and confirm it here with stripe.confirmCardSetup()
+            alert('Card update would be processed here');
+        });
+
+        // Fetch invoices via your backend API
+        async function fetchInvoices() {
+            // This would call your backend which uses Stripe's API
+            // const response = await fetch('/api/invoices');
+            // const invoices = await response.json();
+            // displayInvoices(invoices);
+        }
+    </script>
+</body>
+</html>
