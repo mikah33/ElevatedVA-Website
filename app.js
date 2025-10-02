@@ -343,12 +343,14 @@ window.addEventListener('DOMContentLoaded', async () => {
                 
                 if (profileError) {
                     console.error('Profile creation error:', profileError);
-                } else {
-                    localStorage.removeItem('pendingProfile');
                 }
-                
+
+                // ALWAYS clear localStorage to prevent redirect loops
+                localStorage.removeItem('pendingProfile');
+                localStorage.removeItem('signupEmail');
+
                 // NO webhook for email confirmation - only send webhook on initial signup
-                
+
                 // Redirect to confirmation page ONLY for email confirmations
                 setTimeout(() => {
                     window.location.href = 'confirmation.html';
