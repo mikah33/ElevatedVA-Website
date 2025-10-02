@@ -316,6 +316,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Check if user just confirmed email (came from email link) - IMMEDIATELY
     (function() {
         const hash = window.location.hash;
+        console.log('Checking hash on page load:', hash);
         
         if (hash && hash.includes('access_token')) {
             const urlParams = new URLSearchParams(hash.substring(1)); // Remove the # and parse
@@ -323,12 +324,16 @@ window.addEventListener('DOMContentLoaded', async () => {
             const refreshToken = urlParams.get('refresh_token');
             const type = urlParams.get('type');
             
+            console.log('Hash params:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+            
             // Only redirect to confirmation page if it's a signup confirmation AND there's pending profile data
             if (accessToken && refreshToken && type === 'signup') {
                 // Check if there's pending profile data (indicates email confirmation)
                 const pendingProfile = localStorage.getItem('pendingProfile');
+                console.log('Pending profile exists:', !!pendingProfile);
                 if (pendingProfile) {
                     // User came from email confirmation link - redirect immediately
+                    console.log('Redirecting to confirmation page');
                     window.location.href = 'confirmation.html';
                     return;
                 }
@@ -336,6 +341,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             // If it's not a signup confirmation or no pending profile, clear the hash and stay on page
             if (type !== 'signup' || !localStorage.getItem('pendingProfile')) {
+                console.log('Clearing hash - not a signup confirmation');
                 // Clear the hash to prevent further redirects
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
@@ -351,6 +357,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             // Check if this is an email confirmation (user just confirmed email)
             const pendingProfile = localStorage.getItem('pendingProfile');
+            console.log('Auth state change - pending profile exists:', !!pendingProfile);
             
             if (pendingProfile) {
                 // Create profile with the confirmed user's data
