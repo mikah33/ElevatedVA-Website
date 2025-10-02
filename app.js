@@ -333,14 +333,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Listen for auth changes
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
-        console.log('Auth state change:', event, session);
+        console.log('Auth state change:', event);
         
         if (event === 'SIGNED_IN') {
             currentUser = session.user;
             
             // Check if this is an email confirmation (user just confirmed email)
             const pendingProfile = localStorage.getItem('pendingProfile');
-            console.log('Pending profile:', pendingProfile);
             
             if (pendingProfile) {
                 // Create profile with the confirmed user's data
@@ -516,11 +515,8 @@ async function handleAuthSubmit(e) {
             }
 
             // Check if user needs to confirm email
-            console.log('User data:', data);
-            console.log('Email confirmed:', data?.user?.email_confirmed_at);
             
             if (data?.user && !data.user.email_confirmed_at) {
-                console.log('User needs email confirmation, redirecting to thank you page');
                 
                 // Store the profile data temporarily for after email confirmation
                 localStorage.setItem('pendingProfile', JSON.stringify({
@@ -542,7 +538,6 @@ async function handleAuthSubmit(e) {
                 }, 100);
                 return;
             } else if (data?.user && data.user.email_confirmed_at) {
-                console.log('User email already confirmed');
                 alert('Account created successfully! You can now sign in.');
                 toggleAuthMode();
                 return;
