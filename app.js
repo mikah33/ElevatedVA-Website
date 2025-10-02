@@ -362,7 +362,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     localStorage.removeItem('pendingProfile');
                 }
                 
-                // Send webhook data
+                // Send webhook data for email confirmation
                 try {
                     await fetch('https://contractorai.app.n8n.cloud/webhook/b2c57427-03f6-42ed-8fc5-482fe90cdb66', {
                         method: 'POST',
@@ -377,7 +377,8 @@ window.addEventListener('DOMContentLoaded', async () => {
                             website: profileData.website,
                             app_source: 'web',
                             signup_date: new Date().toISOString(),
-                            user_id: session.user.id
+                            user_id: session.user.id,
+                            status: 'email_confirmed'
                         })
                     });
                 } catch (webhookError) {
@@ -530,6 +531,29 @@ async function handleAuthSubmit(e) {
                 
                 // Store email for thank you page
                 localStorage.setItem('signupEmail', email);
+                
+                // Send webhook data immediately on signup
+                try {
+                    await fetch('https://contractorai.app.n8n.cloud/webhook/b2c57427-03f6-42ed-8fc5-482fe90cdb66', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            full_name: fullName,
+                            phone_number: phoneNumber,
+                            company_name: companyName,
+                            website: website,
+                            app_source: 'web',
+                            signup_date: new Date().toISOString(),
+                            user_id: data.user.id,
+                            status: 'pending_email_confirmation'
+                        })
+                    });
+                } catch (webhookError) {
+                    console.error('Webhook error:', webhookError);
+                }
                 
                 // Close modal first, then redirect
                 closeAuthModal();
