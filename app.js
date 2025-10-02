@@ -348,19 +348,19 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
     })();
 
-    // Listen for auth changes
+    // Listen for auth changes - ONLY for email confirmations
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
         console.log('Auth state change:', event);
         
         if (event === 'SIGNED_IN') {
             currentUser = session.user;
             
-            // Check if this is an email confirmation (user just confirmed email)
+            // ONLY handle email confirmations - check for pending profile data
             const pendingProfile = localStorage.getItem('pendingProfile');
             console.log('Auth state change - pending profile exists:', !!pendingProfile);
             
             if (pendingProfile) {
-                // Create profile with the confirmed user's data
+                // This is an email confirmation - create profile and send webhook
                 const profileData = JSON.parse(pendingProfile);
                 const { error: profileError } = await supabaseClient
                     .from('profiles')
@@ -388,7 +388,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            email: session.user.email, // Use current user's email
+                            email: session.user.email,
                             full_name: profileData.full_name,
                             phone_number: profileData.phone_number,
                             company_name: profileData.company_name,
@@ -408,7 +408,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             
-            // Regular sign-in - do NOTHING here, handled directly in handleAuthSubmit
+            // NO ELSE CLAUSE - regular sign-ins are handled directly in handleAuthSubmit
         } else if (event === 'SIGNED_OUT') {
             currentUser = null;
             updateUIForUnauthenticatedUser();
