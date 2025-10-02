@@ -323,7 +323,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             const refreshToken = urlParams.get('refresh_token');
             const type = urlParams.get('type');
             
-            // Only redirect to confirmation page if it's a signup confirmation
+            // Only redirect to confirmation page if it's a signup confirmation AND there's pending profile data
             if (accessToken && refreshToken && type === 'signup') {
                 // Check if there's pending profile data (indicates email confirmation)
                 const pendingProfile = localStorage.getItem('pendingProfile');
@@ -332,6 +332,12 @@ window.addEventListener('DOMContentLoaded', async () => {
                     window.location.href = 'confirmation.html';
                     return;
                 }
+            }
+            
+            // If it's not a signup confirmation or no pending profile, clear the hash and stay on page
+            if (type !== 'signup' || !localStorage.getItem('pendingProfile')) {
+                // Clear the hash to prevent further redirects
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
     })();
@@ -375,7 +381,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            email: profileData.email,
+                            email: session.user.email, // Use current user's email
                             full_name: profileData.full_name,
                             phone_number: profileData.phone_number,
                             company_name: profileData.company_name,
