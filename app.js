@@ -326,7 +326,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             console.log('Hash params:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
             
-            // Only redirect to confirmation page if it's a signup confirmation AND there's pending profile data
+            // ONLY redirect if it's a signup confirmation AND there's pending profile data
             if (accessToken && refreshToken && type === 'signup') {
                 // Check if there's pending profile data (indicates email confirmation)
                 const pendingProfile = localStorage.getItem('pendingProfile');
@@ -339,12 +339,9 @@ window.addEventListener('DOMContentLoaded', async () => {
                 }
             }
             
-            // If it's not a signup confirmation or no pending profile, clear the hash and stay on page
-            if (type !== 'signup' || !localStorage.getItem('pendingProfile')) {
-                console.log('Clearing hash - not a signup confirmation');
-                // Clear the hash to prevent further redirects
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            // ALWAYS clear the hash for any other case (including regular sign-ins)
+            console.log('Clearing hash - not a signup confirmation');
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
     })();
 
