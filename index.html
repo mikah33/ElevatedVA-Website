@@ -93,9 +93,10 @@
                 <h1 class="hero-title">Never Miss Another Call</h1>
                 <p class="hero-subtitle">AI-powered phone assistant that answers, schedules, and manages your business calls 24/7</p>
                 <div class="hero-buttons">
-                    <button class="primary-button" onclick="handleQuickSubscribe()" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
-                        🚀 Start Now - $39.99/mo
+                    <button class="primary-button" onclick="openEarlySignupModal()" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+                        🎉 Get $5 OFF - $34.99/mo
                     </button>
+                    <button class="secondary-button" onclick="handleQuickSubscribe()">Regular Price - $39.99/mo</button>
                     <button class="secondary-button" onclick="scrollToSection('demo')">Watch Demo</button>
                 </div>
                 <div class="hero-stats">
@@ -186,9 +187,52 @@
                         <span class="countdown-label">Seconds</span>
                     </div>
                 </div>
-                <button class="notify-button" onclick="openAuthModal('signup')">
-                    🔔 Get Notified on Launch Day
+                <button class="notify-button" onclick="openEarlySignupModal()">
+                    🎉 Get $5 OFF + Early Access
                 </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Bird Discount Section -->
+    <section class="discount-section" id="discount">
+        <div class="container">
+            <div class="discount-content">
+                <div class="discount-badge">
+                    <span class="discount-icon">🎉</span>
+                    <span class="discount-text">EARLY BIRD SPECIAL</span>
+                </div>
+                <h2 class="discount-title">Get $5 OFF Your First Month!</h2>
+                <p class="discount-subtitle">Sign up now and save $5 on your first month. Limited time offer!</p>
+                <div class="discount-details">
+                    <div class="price-comparison">
+                        <div class="original-price">
+                            <span class="price-label">Regular Price</span>
+                            <span class="price-value">$39.99/mo</span>
+                        </div>
+                        <div class="discount-arrow">→</div>
+                        <div class="discounted-price">
+                            <span class="price-label">Your Price</span>
+                            <span class="price-value">$34.99/mo</span>
+                        </div>
+                    </div>
+                    <div class="discount-code-display">
+                        <span class="code-label">Use Code:</span>
+                        <span class="discount-code" id="discountCode">EARLY5</span>
+                        <button class="copy-code-btn" onclick="copyDiscountCode()">📋</button>
+                    </div>
+                </div>
+                <div class="discount-actions">
+                    <button class="discount-button primary" onclick="openEarlySignupModal()">
+                        🚀 Claim Your Discount - $34.99/mo
+                    </button>
+                    <button class="discount-button secondary" onclick="scrollToSection('demo')">
+                        Learn More First
+                    </button>
+                </div>
+                <div class="discount-timer">
+                    <span class="timer-text">⏰ Limited time offer - expires when app launches!</span>
+                </div>
             </div>
         </div>
     </section>
@@ -381,6 +425,63 @@
                     <p>🔒 Payments are secure and encrypted</p>
                     <p style="margin-top: 0.5rem;">Cancel anytime from your account</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Early Signup Modal -->
+    <div class="modal" id="earlySignupModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEarlySignupModal()">&times;</span>
+            <div class="early-signup-container">
+                <div class="discount-badge" style="margin-bottom: 1.5rem;">
+                    <span class="discount-icon">🎉</span>
+                    <span class="discount-text">EARLY BIRD SPECIAL</span>
+                </div>
+                <h2>Claim Your $5 Discount!</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Get $5 off your first month when you sign up today</p>
+
+                <form id="earlySignupForm">
+                    <div class="form-group">
+                        <input type="email" id="earlyEmail" placeholder="Email address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="earlyFullName" placeholder="Full name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="earlyDiscountCode" placeholder="Discount Code" value="EARLY5" readonly>
+                        <small style="color: var(--text-secondary); font-size: 0.8rem;">Code automatically applied</small>
+                    </div>
+                    
+                    <div class="pricing-summary" style="background: var(--glass); padding: 1.5rem; border-radius: 15px; margin: 1.5rem 0; border: 1px solid rgba(34, 197, 94, 0.2);">
+                        <h4 style="color: var(--primary-light); margin-bottom: 1rem;">Your Pricing</h4>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Monthly Subscription</span>
+                            <span>$39.99</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #22c55e;">
+                            <span>Early Bird Discount (-$5.00)</span>
+                            <span>-$5.00</span>
+                        </div>
+                        <hr style="opacity: 0.2; margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; color: #22c55e;">
+                            <span>Total (First Month)</span>
+                            <span>$34.99</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                            *Regular price $39.99/mo after first month
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+                        🚀 Start My Subscription - $34.99
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    <span>Already have an account?</span>
+                    <a href="#" onclick="closeEarlySignupModal(); openAuthModal('signin');">Sign in</a>
+                </p>
             </div>
         </div>
     </div>

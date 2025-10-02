@@ -87,9 +87,9 @@ let paymentElement = null;
 let stripeElements = null;
 
 // Open Stripe Checkout Modal
-async function openStripeCheckout() {
+async function openStripeCheckout(hasDiscount = false) {
     // Use embedded checkout to keep users on your site
-    await openEmbeddedCheckout();
+    await openEmbeddedCheckout(hasDiscount);
 }
 
 // Redirect to Stripe Checkout (Simple approach - uses your webhooks)
@@ -123,12 +123,49 @@ async function redirectToStripeCheckout() {
 }
 
 // Open embedded checkout (keeps users on your site)
-async function openEmbeddedCheckout() {
+async function openEmbeddedCheckout(hasDiscount = false) {
     const modal = document.getElementById('stripeCheckoutModal');
     modal.style.display = 'block';
 
+    // Update pricing display based on discount
+    updatePricingDisplay(hasDiscount);
+
     // Initialize embedded payment form
-    await initializeEmbeddedPayment();
+    await initializeEmbeddedPayment(hasDiscount);
+}
+
+// Update pricing display in checkout modal
+function updatePricingDisplay(hasDiscount) {
+    const selectedPriceEl = document.getElementById('selectedPrice');
+    const buttonTextEl = document.getElementById('button-text');
+    
+    if (hasDiscount) {
+        if (selectedPriceEl) selectedPriceEl.textContent = '$34.99/mo';
+        if (buttonTextEl) buttonTextEl.textContent = 'Subscribe Now - $34.99/mo';
+        
+        // Add discount info to the modal
+        const subscriptionSummary = document.querySelector('.subscription-summary');
+        if (subscriptionSummary && !subscriptionSummary.querySelector('.discount-info')) {
+            const discountInfo = document.createElement('div');
+            discountInfo.className = 'discount-info';
+            discountInfo.style.cssText = `
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 10px;
+                padding: 1rem;
+                margin: 1rem 0;
+                text-align: center;
+            `;
+            discountInfo.innerHTML = `
+                <div style="color: #22c55e; font-weight: 600; margin-bottom: 0.5rem;">🎉 Early Bird Discount Applied!</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">You're saving $5 on your first month</div>
+            `;
+            subscriptionSummary.appendChild(discountInfo);
+        }
+    } else {
+        if (selectedPriceEl) selectedPriceEl.textContent = '$39.99/mo';
+        if (buttonTextEl) buttonTextEl.textContent = 'Subscribe Now - $39.99/mo';
+    }
 }
 
 // Close Stripe Checkout Modal
@@ -144,7 +181,7 @@ function closeCheckoutModal() {
 }
 
 // Initialize Embedded Payment
-async function initializeEmbeddedPayment() {
+async function initializeEmbeddedPayment(hasDiscount = false) {
     try {
         if (!stripe) {
             stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
@@ -155,9 +192,10 @@ async function initializeEmbeddedPayment() {
 
         // Create elements with subscription mode
         if (!elements) {
+            const amount = hasDiscount ? 3499 : 3999; // $34.99 or $39.99 in cents
             elements = stripe.elements({
                 mode: 'subscription',
-                amount: 3999, // $39.99 in cents
+                amount: amount,
                 currency: 'usd',
                 appearance: {
                     theme: 'night',
@@ -597,27 +635,38 @@ async function handleSubscribe() {
         return;
     }
 
+    // Check if user has early bird discount
+    const hasEarlyBirdDiscount = await checkEarlyBirdDiscount();
+    const subscriptionPrice = hasEarlyBirdDiscount ? 34.99 : 39.99;
+
     // Track subscription initiation
     if (typeof fbq !== 'undefined') {
         fbq('track', 'InitiateCheckout', {
-            value: 39.99,
+            value: subscriptionPrice,
             currency: 'USD',
-            content_name: 'Monthly Subscription',
+            content_name: hasEarlyBirdDiscount ? 'Early Bird Subscription' : 'Monthly Subscription',
             content_type: 'product'
         });
     }
 
-    // Open the embedded Stripe checkout modal
-    openStripeCheckout();
+    // Open the embedded Stripe checkout modal with discount info
+    openStripeCheckout(hasEarlyBirdDiscount);
+}
 
-    // You can store subscription status in Supabase
-    // const { data, error } = await supabaseClient
-    //     .from('subscriptions')
-    //     .insert({
-    //         user_id: currentUser.id,
-    //         plan: 'professional',
-    //         status: 'active'
-    //     });
+// Check if user has early bird discount
+async function checkEarlyBirdDiscount() {
+    try {
+        const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('early_bird, discount_code')
+            .eq('id', currentUser.id)
+            .single();
+
+        return profile?.early_bird === true && profile?.discount_code === 'EARLY5';
+    } catch (error) {
+        console.error('Error checking early bird discount:', error);
+        return false;
+    }
 }
 
 // UI Update Functions
@@ -943,15 +992,133 @@ async function cancelSubscription() {
     }
 }
 
+// Early Signup Modal Functions
+function openEarlySignupModal() {
+    const modal = document.getElementById('earlySignupModal');
+    modal.style.display = 'block';
+    
+    // Reset form
+    document.getElementById('earlySignupForm').reset();
+    document.getElementById('earlyDiscountCode').value = 'EARLY5';
+}
+
+function closeEarlySignupModal() {
+    document.getElementById('earlySignupModal').style.display = 'none';
+}
+
+// Copy discount code to clipboard
+function copyDiscountCode() {
+    const discountCode = document.getElementById('discountCode').textContent;
+    navigator.clipboard.writeText(discountCode).then(() => {
+        // Show feedback
+        const copyBtn = document.querySelector('.copy-code-btn');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '✓';
+        copyBtn.style.background = 'rgba(34, 197, 94, 0.3)';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.background = 'rgba(34, 197, 94, 0.2)';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy code. Please copy manually: ' + discountCode);
+    });
+}
+
+// Handle early signup form submission
+async function handleEarlySignupSubmit(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('earlyEmail').value;
+    const fullName = document.getElementById('earlyFullName').value;
+    const discountCode = document.getElementById('earlyDiscountCode').value;
+
+    try {
+        // Sign up new user
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password: generateTemporaryPassword(), // Generate a temporary password
+            options: {
+                data: {
+                    full_name: fullName,
+                    app_source: 'web',
+                    discount_code: discountCode,
+                    early_bird: true
+                },
+                emailRedirectTo: window.location.origin
+            }
+        });
+
+        if (error) throw error;
+
+        // Create profile in database with discount info
+        if (data?.user) {
+            const { error: profileError } = await supabaseClient
+                .from('profiles')
+                .insert({
+                    id: data.user.id,
+                    full_name: fullName,
+                    email: email,
+                    app_source: 'web',
+                    discount_code: discountCode,
+                    early_bird: true,
+                    subscription_status: 'pending_discount'
+                });
+
+            if (profileError) console.error('Profile creation error:', profileError);
+        }
+
+        // Track early bird signup conversion
+        if (typeof fbq !== 'undefined') {
+            fbq('track', 'CompleteRegistration', {
+                content_name: 'Early Bird Signup',
+                value: 34.99,
+                currency: 'USD'
+            });
+        }
+
+        // Close modal and show success message
+        closeEarlySignupModal();
+        alert('🎉 Welcome to ElevatedVA! Check your email for verification and your discount code. You\'ll get $5 off your first month!');
+        
+        // Open regular auth modal for sign in
+        setTimeout(() => {
+            openAuthModal('signin');
+        }, 2000);
+
+    } catch (error) {
+        console.error('Early signup error:', error);
+        alert(error.message || 'An error occurred. Please try again.');
+    }
+}
+
+// Generate temporary password for early signup
+function generateTemporaryPassword() {
+    return 'Temp' + Math.random().toString(36).substring(2, 15) + '!';
+}
+
+// Initialize early signup form handler
+document.addEventListener('DOMContentLoaded', function() {
+    const earlySignupForm = document.getElementById('earlySignupForm');
+    if (earlySignupForm) {
+        earlySignupForm.addEventListener('submit', handleEarlySignupSubmit);
+    }
+});
+
 // Close modals when clicking outside
 window.onclick = function(event) {
     const authModal = document.getElementById('authModal');
     const accountModal = document.getElementById('accountModal');
+    const earlySignupModal = document.getElementById('earlySignupModal');
 
     if (event.target == authModal) {
         closeAuthModal();
     }
     if (event.target == accountModal) {
         closeAccountModal();
+    }
+    if (event.target == earlySignupModal) {
+        closeEarlySignupModal();
     }
 }
