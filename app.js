@@ -439,6 +439,10 @@ function openAuthModal(mode) {
         phoneGroup.style.display = 'block';
         companyGroup.style.display = 'block';
         websiteGroup.style.display = 'block';
+        // Make fields required for signup
+        document.getElementById('fullName').required = true;
+        document.getElementById('phoneNumber').required = true;
+        document.getElementById('companyName').required = true;
         switchText.textContent = 'Already have an account?';
         switchLink.textContent = 'Sign in';
     } else {
@@ -448,6 +452,10 @@ function openAuthModal(mode) {
         phoneGroup.style.display = 'none';
         companyGroup.style.display = 'none';
         websiteGroup.style.display = 'none';
+        // Remove required attribute for sign in
+        document.getElementById('fullName').required = false;
+        document.getElementById('phoneNumber').required = false;
+        document.getElementById('companyName').required = false;
         switchText.textContent = "Don't have an account?";
         switchLink.textContent = 'Sign up';
     }
