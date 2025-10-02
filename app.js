@@ -380,28 +380,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     localStorage.removeItem('pendingProfile');
                 }
                 
-                // Send webhook data for email confirmation
-                try {
-                    await fetch('https://contractorai.app.n8n.cloud/webhook/b2c57427-03f6-42ed-8fc5-482fe90cdb66', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            email: session.user.email,
-                            full_name: profileData.full_name,
-                            phone_number: profileData.phone_number,
-                            company_name: profileData.company_name,
-                            website: profileData.website,
-                            app_source: 'web',
-                            signup_date: new Date().toISOString(),
-                            user_id: session.user.id,
-                            status: 'email_confirmed'
-                        })
-                    });
-                } catch (webhookError) {
-                    console.error('Webhook error:', webhookError);
-                }
+                // NO webhook for email confirmation - only send webhook on initial signup
                 
                 // Redirect to confirmation page
                 window.location.href = 'confirmation.html';
