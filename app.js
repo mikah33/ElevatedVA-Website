@@ -313,10 +313,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         updateUIForAuthenticatedUser();
     }
 
-    // Clear any hash parameters on page load to prevent unwanted redirects
-    if (window.location.hash) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    // Hash clearing removed - let Supabase handle auth callbacks naturally
 
     // Listen for auth changes - ONLY for email confirmations
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -574,18 +571,21 @@ async function handleAuthSubmit(e) {
             toggleAuthMode(); // Switch to sign in mode
         } else {
             // Sign in existing user
-            console.log('Attempting sign in with:', email);
+            console.log('🔐 Attempting sign in with:', email);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email,
                 password
             });
 
             if (error) {
-                console.error('Sign in error:', error);
+                console.error('❌ Sign in error:', error);
                 throw error;
             }
-            
-            console.log('Sign in successful:', data);
+
+            console.log('✅ Sign in successful - updating UI only, NO redirects');
+
+            // Set current user explicitly
+            currentUser = data.user;
 
             // Check for existing Stripe subscription
             if (data?.user) {
@@ -601,9 +601,10 @@ async function handleAuthSubmit(e) {
                 }
             }
 
-            // Successful sign in - NO webhook needed, just update UI directly
+            // ONLY update UI and close modal - NO redirects, NO webhooks, NO emails
             updateUIForAuthenticatedUser();
             closeAuthModal();
+            console.log('✅ Sign-in complete - user should see account menu');
         }
     } catch (error) {
         console.error('Auth error:', error);
