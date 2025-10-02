@@ -313,37 +313,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         updateUIForAuthenticatedUser();
     }
 
-    // Check if user just confirmed email (came from email link) - IMMEDIATELY
-    (function() {
-        const hash = window.location.hash;
-        console.log('Checking hash on page load:', hash);
-        
-        if (hash && hash.includes('access_token')) {
-            const urlParams = new URLSearchParams(hash.substring(1)); // Remove the # and parse
-            const accessToken = urlParams.get('access_token');
-            const refreshToken = urlParams.get('refresh_token');
-            const type = urlParams.get('type');
-            
-            console.log('Hash params:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
-            
-            // ONLY redirect if it's a signup confirmation AND there's pending profile data
-            if (accessToken && refreshToken && type === 'signup') {
-                // Check if there's pending profile data (indicates email confirmation)
-                const pendingProfile = localStorage.getItem('pendingProfile');
-                console.log('Pending profile exists:', !!pendingProfile);
-                if (pendingProfile) {
-                    // User came from email confirmation link - redirect immediately
-                    console.log('Redirecting to confirmation page');
-                    window.location.href = 'confirmation.html';
-                    return;
-                }
-            }
-            
-            // ALWAYS clear the hash for any other case (including regular sign-ins)
-            console.log('Clearing hash - not a signup confirmation');
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    })();
+    // Clear any hash parameters on page load to prevent unwanted redirects
+    if (window.location.hash) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 
     // Listen for auth changes - ONLY for email confirmations
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -379,8 +352,10 @@ window.addEventListener('DOMContentLoaded', async () => {
                 
                 // NO webhook for email confirmation - only send webhook on initial signup
                 
-                // Redirect to confirmation page
-                window.location.href = 'confirmation.html';
+                // Redirect to confirmation page ONLY for email confirmations
+                setTimeout(() => {
+                    window.location.href = 'confirmation.html';
+                }, 100);
                 return;
             }
             
