@@ -401,9 +401,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             
-            // Regular sign-in - just update UI and close modal
-            updateUIForAuthenticatedUser();
-            closeAuthModal();
+            // Regular sign-in - do NOTHING here, handled directly in handleAuthSubmit
         } else if (event === 'SIGNED_OUT') {
             currentUser = null;
             updateUIForUnauthenticatedUser();
@@ -645,7 +643,9 @@ async function handleAuthSubmit(e) {
                 }
             }
 
-            // Successful sign in - the auth state change listener will handle UI updates
+            // Successful sign in - NO webhook needed, just update UI directly
+            updateUIForAuthenticatedUser();
+            closeAuthModal();
         }
     } catch (error) {
         console.error('Auth error:', error);
