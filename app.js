@@ -323,10 +323,15 @@ window.addEventListener('DOMContentLoaded', async () => {
             const refreshToken = urlParams.get('refresh_token');
             const type = urlParams.get('type');
             
+            // Only redirect to confirmation page if it's a signup confirmation
             if (accessToken && refreshToken && type === 'signup') {
-                // User came from email confirmation link - redirect immediately
-                window.location.href = 'confirmation.html';
-                return;
+                // Check if there's pending profile data (indicates email confirmation)
+                const pendingProfile = localStorage.getItem('pendingProfile');
+                if (pendingProfile) {
+                    // User came from email confirmation link - redirect immediately
+                    window.location.href = 'confirmation.html';
+                    return;
+                }
             }
         }
     })();
@@ -390,6 +395,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             
+            // Regular sign-in - just update UI and close modal
             updateUIForAuthenticatedUser();
             closeAuthModal();
         } else if (event === 'SIGNED_OUT') {
