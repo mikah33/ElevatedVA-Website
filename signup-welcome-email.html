@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ElevatedVA!</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #2d3748;
+        }
+        .user-info {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #7c3aed;
+        }
+        .user-info h3 {
+            margin: 0 0 15px 0;
+            color: #2d3748;
+            font-size: 16px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 120px;
+        }
+        .info-value {
+            color: #2d3748;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .cta-section h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .cta-section p {
+            margin: 0 0 20px 0;
+            opacity: 0.9;
+        }
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #16a34a;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        .discount-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .discount-info h3 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 18px;
+        }
+        .discount-info p {
+            margin: 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        .next-steps {
+            margin: 30px 0;
+        }
+        .next-steps h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .next-steps li {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer p {
+            margin: 0 0 10px 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            color: #7c3aed;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+            .info-label {
+                min-width: auto;
+                margin-bottom: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🎉 Welcome to ElevatedVA!</h1>
+            <p>Your AI Phone Assistant is Ready to Transform Your Business</p>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-message">
+                <strong>Hello {{full_name}}!</strong><br>
+                Thank you for joining ElevatedVA. We're excited to help you never miss another important business call.
+            </div>
+
+            <div class="user-info">
+                <h3>📋 Your Account Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">{{full_name}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{email}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">{{phone_number}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Company:</span>
+                    <span class="info-value">{{company_name}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Website:</span>
+                    <span class="info-value">{{website}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Signup Date:</span>
+                    <span class="info-value">{{signup_date}}</span>
+                </div>
+            </div>
+
+            <div class="discount-info">
+                <h3>💰 Early Bird Special - $5 OFF!</h3>
+                <p>As an early signup, you'll receive a discount code via email on launch day to get $5 off your first month!</p>
+            </div>
+
+            <div class="cta-section">
+                <h2>🚀 Ready to Get Started?</h2>
+                <p>Your account is set up and ready to go. We'll notify you as soon as the app launches!</p>
+                <a href="https://elevatedva.com" class="cta-button">Visit Our Website</a>
+            </div>
+
+            <div class="next-steps">
+                <h3>What Happens Next?</h3>
+                <ul>
+                    <li><strong>App Launch:</strong> We'll notify you when the mobile app is ready</li>
+                    <li><strong>Discount Code:</strong> You'll receive your $5 OFF code via email</li>
+                    <li><strong>Setup:</strong> Complete your AI assistant setup in just 5 minutes</li>
+                    <li><strong>Support:</strong> Our team is here to help you succeed</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>ElevatedVA</strong> - AI Phone Assistant for Business</p>
+            <p>Never miss another important call with our 24/7 AI assistant</p>
+            
+            <div class="social-links">
+                <a href="https://elevatedva.com">Website</a>
+                <a href="mailto:support@elevatedva.com">Support</a>
+                <a href="https://elevatedva.com/privacy">Privacy Policy</a>
+            </div>
+            
+            <p style="font-size: 12px; color: #9ca3af;">
+                This email was sent to {{email}} because you signed up for ElevatedVA.<br>
+                If you didn't sign up, please ignore this email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

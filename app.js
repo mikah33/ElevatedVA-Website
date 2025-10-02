@@ -353,6 +353,9 @@ function openAuthModal(mode) {
     const title = document.getElementById('authTitle');
     const subtitle = document.getElementById('authSubtitle');
     const nameGroup = document.getElementById('nameGroup');
+    const phoneGroup = document.getElementById('phoneGroup');
+    const companyGroup = document.getElementById('companyGroup');
+    const websiteGroup = document.getElementById('websiteGroup');
     const switchText = document.getElementById('authSwitchText');
     const switchLink = document.getElementById('authSwitchLink');
 
@@ -360,12 +363,18 @@ function openAuthModal(mode) {
         title.textContent = 'Create Account';
         subtitle.textContent = 'Get started with ElevatedVA today';
         nameGroup.style.display = 'block';
+        phoneGroup.style.display = 'block';
+        companyGroup.style.display = 'block';
+        websiteGroup.style.display = 'block';
         switchText.textContent = 'Already have an account?';
         switchLink.textContent = 'Sign in';
     } else {
         title.textContent = 'Welcome Back';
         subtitle.textContent = 'Access your account on web or mobile';
         nameGroup.style.display = 'none';
+        phoneGroup.style.display = 'none';
+        companyGroup.style.display = 'none';
+        websiteGroup.style.display = 'none';
         switchText.textContent = "Don't have an account?";
         switchLink.textContent = 'Sign up';
     }
@@ -391,6 +400,9 @@ async function handleAuthSubmit(e) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const fullName = document.getElementById('fullName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const companyName = document.getElementById('companyName').value;
+    const website = document.getElementById('website').value;
 
     try {
         let result;
@@ -419,10 +431,36 @@ async function handleAuthSubmit(e) {
                         id: data.user.id,
                         full_name: fullName,
                         email: email,
+                        phone_number: phoneNumber,
+                        company_name: companyName,
+                        website: website,
                         app_source: 'web'
                     });
 
                 if (profileError) console.error('Profile creation error:', profileError);
+            }
+
+            // Send data to webhook
+            try {
+                await fetch('https://contractorai.app.n8n.cloud/webhook/b2c57427-03f6-42ed-8fc5-482fe90cdb66', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        full_name: fullName,
+                        phone_number: phoneNumber,
+                        company_name: companyName,
+                        website: website,
+                        app_source: 'web',
+                        signup_date: new Date().toISOString(),
+                        user_id: data?.user?.id
+                    })
+                });
+            } catch (webhookError) {
+                console.error('Webhook error:', webhookError);
+                // Don't fail the signup if webhook fails
             }
 
             // Track signup conversion
