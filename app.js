@@ -313,50 +313,23 @@ window.addEventListener('DOMContentLoaded', async () => {
         updateUIForAuthenticatedUser();
     }
 
-    // Check if user just confirmed email (came from email link)
-    function checkEmailConfirmation() {
-        console.log('=== CHECKING EMAIL CONFIRMATION ===');
+    // Check if user just confirmed email (came from email link) - IMMEDIATELY
+    (function() {
         const hash = window.location.hash;
-        console.log('Current URL:', window.location.href);
-        console.log('Current hash:', hash);
         
         if (hash && hash.includes('access_token')) {
-            console.log('Found access_token in hash!');
             const urlParams = new URLSearchParams(hash.substring(1)); // Remove the # and parse
             const accessToken = urlParams.get('access_token');
             const refreshToken = urlParams.get('refresh_token');
             const type = urlParams.get('type');
             
-            console.log('Access token:', accessToken);
-            console.log('Type:', type);
-            
             if (accessToken && refreshToken && type === 'signup') {
-                // User came from email confirmation link
-                console.log('User came from email confirmation link');
-                const pendingProfile = localStorage.getItem('pendingProfile');
-                console.log('Pending profile:', pendingProfile);
-                if (pendingProfile) {
-                    // Redirect to confirmation page
-                    console.log('Redirecting to confirmation page');
-                    window.location.href = 'confirmation.html';
-                    return;
-                } else {
-                    console.log('No pending profile found, redirecting anyway');
-                    window.location.href = 'confirmation.html';
-                    return;
-                }
+                // User came from email confirmation link - redirect immediately
+                window.location.href = 'confirmation.html';
+                return;
             }
-        } else {
-            console.log('No access_token found in hash');
         }
-    }
-    
-    // Check immediately on page load
-    console.log('Page loaded, checking email confirmation...');
-    checkEmailConfirmation();
-    
-    // Also check when hash changes
-    window.addEventListener('hashchange', checkEmailConfirmation);
+    })();
 
     // Listen for auth changes
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
