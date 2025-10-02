@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmed - ElevatedVA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-content">
+            <div class="success-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="40" fill="#22c55e"/>
+                    <path d="M25 40L35 50L55 30" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <h1>Email Confirmed!</h1>
+            <p class="confirmation-message">
+                Your email has been successfully verified. Your account is now active and ready to use.
+            </p>
+            
+            <div class="account-ready">
+                <h3>Your Account is Ready</h3>
+                <p>You can now access all features of ElevatedVA and start managing your business communications.</p>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="index.html" class="primary-button">Get Started</a>
+                <a href="index.html#demo" class="secondary-button">Watch Demo</a>
+            </div>
+            
+            <div class="features-preview">
+                <h4>What You Can Do Now:</h4>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">📞</span>
+                        <span>Set up your phone system</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🤖</span>
+                        <span>Configure AI receptionist</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <span>View call analytics</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚙️</span>
+                        <span>Customize settings</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <p>Need help getting started?</p>
+                <a href="mailto:support@elevatedva.com" class="support-link">Contact Support</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .confirmation-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        
+        .confirmation-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-icon {
+            margin-bottom: 30px;
+        }
+        
+        .confirmation-content h1 {
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-message {
+            color: #6b7280;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .account-ready {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .account-ready h3 {
+            color: #0c4a6e;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .account-ready p {
+            color: #0c4a6e;
+            margin: 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .primary-button {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .primary-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .secondary-button {
+            background: white;
+            color: #7c3aed;
+            border: 2px solid #7c3aed;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .secondary-button:hover {
+            background: #7c3aed;
+            color: white;
+        }
+        
+        .features-preview {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        
+        .features-preview h4 {
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        
+        .feature-icon {
+            font-size: 20px;
+        }
+        
+        .help-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .help-section p {
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        
+        .support-link {
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .support-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .confirmation-content {
+                padding: 30px 20px;
+            }
+            
+            .confirmation-content h1 {
+                font-size: 24px;
+            }
+            
+            .confirmation-message {
+                font-size: 16px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Signup</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Test Supabase Signup</h1>
+    <input type="email" id="email" placeholder="Email" value="test@example.com">
+    <input type="password" id="password" placeholder="Password" value="password123">
+    <button onclick="testSignup()">Test Signup</button>
+    <div id="result"></div>
+
+    <script>
+        const supabase = window.supabase.createClient(
+            'https://csarhyiqmprbnvfosmde.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzYXJoeWlxbXByYm52Zm9zbWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2NTg3MTcsImV4cCI6MjA3MzIzNDcxN30.pOY3o5OQldoJZwlAOe1BSrYQfzy_9HVAQRgjVBnXxJM'
+        );
+
+        async function testSignup() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                console.log('Testing signup with:', email);
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    document.getElementById('result').innerHTML = 'ERROR: ' + error.message;
+                    console.error('Error:', error);
+                } else {
+                    document.getElementById('result').innerHTML = 'SUCCESS: ' + JSON.stringify(data);
+                    console.log('Success:', data);
+                }
+            } catch (err) {
+                document.getElementById('result').innerHTML = 'CATCH ERROR: ' + err.message;
+                console.error('Catch error:', err);
+            }
+        }
+    </script>
+</body>
+</html>

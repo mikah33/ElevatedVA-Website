@@ -314,9 +314,60 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Listen for auth changes
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN') {
             currentUser = session.user;
+            
+            // Check if this is an email confirmation (user just confirmed email)
+            const pendingProfile = localStorage.getItem('pendingProfile');
+            if (pendingProfile) {
+                // Create profile with the confirmed user's data
+                const profileData = JSON.parse(pendingProfile);
+                const { error: profileError } = await supabaseClient
+                    .from('profiles')
+                    .insert({
+                        id: session.user.id,
+                        username: profileData.full_name,
+                        full_name: profileData.full_name,
+                        business_email: profileData.email,
+                        phone_number: profileData.phone_number,
+                        company_name: profileData.company_name,
+                        website_url: profileData.website
+                    });
+                
+                if (profileError) {
+                    console.error('Profile creation error:', profileError);
+                } else {
+                    localStorage.removeItem('pendingProfile');
+                }
+                
+                // Send webhook data
+                try {
+                    await fetch('https://contractorai.app.n8n.cloud/webhook/b2c57427-03f6-42ed-8fc5-482fe90cdb66', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: profileData.email,
+                            full_name: profileData.full_name,
+                            phone_number: profileData.phone_number,
+                            company_name: profileData.company_name,
+                            website: profileData.website,
+                            app_source: 'web',
+                            signup_date: new Date().toISOString(),
+                            user_id: session.user.id
+                        })
+                    });
+                } catch (webhookError) {
+                    console.error('Webhook error:', webhookError);
+                }
+                
+                // Redirect to confirmation page
+                window.location.href = 'confirmation.html';
+                return;
+            }
+            
             updateUIForAuthenticatedUser();
             closeAuthModal();
         } else if (event === 'SIGNED_OUT') {
@@ -402,42 +453,77 @@ async function handleAuthSubmit(e) {
     const fullName = document.getElementById('fullName').value;
     const phoneNumber = document.getElementById('phoneNumber').value;
     const companyName = document.getElementById('companyName').value;
-    const website = document.getElementById('website').value;
+    let website = document.getElementById('website').value;
+    
+    // Auto-add https:// if website doesn't start with http:// or https://
+    if (website && !website.startsWith('http://') && !website.startsWith('https://')) {
+        website = 'https://' + website;
+        console.log('Auto-added https:// to website:', website);
+    }
 
     try {
         let result;
 
         if (currentAuthMode === 'signup') {
-            // Sign up new user
+            // Test Supabase connection first
+            console.log('Testing Supabase connection...');
+            const { data: testData, error: testError } = await supabaseClient
+                .from('profiles')
+                .select('count')
+                .limit(1);
+            
+            if (testError) {
+                console.error('Supabase connection test failed:', testError);
+                alert('Database connection failed: ' + testError.message);
+                return;
+            }
+            
+            console.log('Supabase connection test passed');
+            
+            // Sign up new user with minimal data
+            console.log('Attempting signup with email:', email);
             const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                        app_source: 'web'
-                    },
-                    emailRedirectTo: window.location.origin
-                }
+                email: email.trim(),
+                password: password.trim()
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Supabase auth error:', error);
+                alert('Signup failed: ' + error.message);
+                return;
+            }
 
-            // Create profile in database
-            if (data?.user) {
-                const { error: profileError } = await supabaseClient
-                    .from('profiles')
-                    .insert({
-                        id: data.user.id,
-                        full_name: fullName,
-                        email: email,
-                        phone_number: phoneNumber,
-                        company_name: companyName,
-                        website: website,
-                        app_source: 'web'
-                    });
-
-                if (profileError) console.error('Profile creation error:', profileError);
+            // Check if user needs to confirm email
+            console.log('User data:', data);
+            console.log('Email confirmed:', data?.user?.email_confirmed_at);
+            
+            if (data?.user && !data.user.email_confirmed_at) {
+                console.log('User needs email confirmation, redirecting to thank you page');
+                
+                // Store the profile data temporarily for after email confirmation
+                localStorage.setItem('pendingProfile', JSON.stringify({
+                    full_name: fullName,
+                    email: email,
+                    phone_number: phoneNumber,
+                    company_name: companyName,
+                    website: website,
+                    app_source: 'web'
+                }));
+                
+                // Store email for thank you page
+                localStorage.setItem('signupEmail', email);
+                
+                // Close modal first, then redirect
+                closeAuthModal();
+                setTimeout(() => {
+                    window.location.href = 'thank-you.html?email=' + encodeURIComponent(email);
+                }, 100);
+                return;
+            } else if (data?.user && data.user.email_confirmed_at) {
+                console.log('User email already confirmed');
+                alert('Account created successfully! You can now sign in.');
+                toggleAuthMode();
+                return;
             }
 
             // Send data to webhook

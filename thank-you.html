@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - ElevatedVA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="thank-you-container">
+        <div class="thank-you-content">
+            <div class="success-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="40" fill="#22c55e"/>
+                    <path d="M25 40L35 50L55 30" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <h1>Thank You for Signing Up!</h1>
+            <p class="thank-you-message">
+                Welcome to ElevatedVA! We're excited to have you on board. 
+                Please check your email and click the confirmation link to complete your account setup.
+            </p>
+            
+            <div class="next-steps">
+                <h3>What's Next?</h3>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Check Your Email</h4>
+                        <p>We've sent you a confirmation link</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Click the Link</h4>
+                        <p>Verify your email address to activate your account</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Get Started</h4>
+                        <p>Access your account and begin using ElevatedVA</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <p>Didn't receive the email? Check your spam folder or</p>
+                <button class="resend-button" onclick="resendConfirmation()">Resend Confirmation</button>
+            </div>
+            
+            <div class="back-to-home">
+                <a href="index.html" class="back-link">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function resendConfirmation() {
+            // Get email from URL params or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email') || localStorage.getItem('signupEmail');
+            
+            if (email) {
+                // Here you would call your resend confirmation function
+                alert('Confirmation email resent to ' + email);
+            } else {
+                alert('Please try signing up again');
+            }
+        }
+    </script>
+
+    <style>
+        .thank-you-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        
+        .thank-you-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-icon {
+            margin-bottom: 30px;
+        }
+        
+        .thank-you-content h1 {
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .thank-you-message {
+            color: #6b7280;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .next-steps {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+        
+        .next-steps h3 {
+            color: #1f2937;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            background: #7c3aed;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: #1f2937;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .step-content p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .help-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .help-section p {
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+        
+        .resend-button {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .resend-button:hover {
+            background: #6d28d9;
+        }
+        
+        .back-to-home {
+            margin-top: 20px;
+        }
+        
+        .back-link {
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        
+        .back-link:hover {
+            color: #6d28d9;
+        }
+        
+        @media (max-width: 600px) {
+            .thank-you-content {
+                padding: 30px 20px;
+            }
+            
+            .thank-you-content h1 {
+                font-size: 24px;
+            }
+            
+            .thank-you-message {
+                font-size: 16px;
+            }
+        }
+    </style>
+</body>
+</html>
